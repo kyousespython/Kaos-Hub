@@ -9,5 +9,10 @@ if game.PlaceId==3978370137 or game.PlaceId==1730877806 then
 
 if game.PlaceId==8425128940 then 
   loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/aws"))()
+end
+
+else 
+game.Players.LocalPlayer:kick("You have been Kicked by Kaos, Wrong Game!")
+
 
 end
