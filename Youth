@@ -11,6 +11,10 @@ if game.PlaceId==8425128940 then
   loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/aws"))()
 end
 
+if game.PlaceId==6777872443 then 
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/pp"))()
+end
+
 else 
 game.Players.LocalPlayer:kick("You have been Kicked by Kaos, Wrong Game!")
 end
