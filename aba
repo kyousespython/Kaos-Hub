@@ -129,6 +129,7 @@ SectionFarm:CreateTextbox("Timer to Hop", false, function (vv)
     if bool then 
         farmcoins()
     end
+    serverHop()
  end)
 
  SectionSettings:CreateButton("Show FPS", function ()
