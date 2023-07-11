@@ -1,0 +1,262 @@
+-- ABA
+
+if not game:IsLoaded() then 
+    repeat game.Loaded:Wait()
+    until game:IsLoaded() 
+end
+local plr = game.Players.LocalPlayer
+local queue_on_teleport = queue_on_teleport
+if syn then queue_on_teleport = syn.queue_on_teleport end
+queue_on_teleport([[
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/Youth", true))()
+]])
+
+
+getgenv().rejoin = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
+    if child.Name == 'ErrorPrompt' and child:FindFirstChild('MessageArea') and child.MessageArea:FindFirstChild("ErrorFrame") then
+        game:GetService("TeleportService"):Teleport(game.PlaceId)
+    end
+end)
+
+
+
+
+
+getgenv().farmcoins = false
+
+
+
+
+repeat
+    wait()
+until game.Loaded
+if game.PlaceId == 5411459567 then
+    repeat
+        task.wait(1)
+    until game.Workspace.Message
+end
+
+
+local function notify(text)
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Kaos Coin Farm",
+        Duration = 60,
+        Text = text
+    })
+end
+
+local function serverHop()
+    if syn then
+        syn.queue_on_teleport(
+            'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
+    else
+        queue_on_teleport(
+            'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
+    end
+
+end
+
+
+function farmcoins()
+    while getgenv().farmcoins == true do
+if game.GameId == 578392296 then
+    if game.PlaceId ~= 5411459567 then
+        notify("Joining AFK WORLD")
+        serverHop()
+        game:GetService('TeleportService'):Teleport(5411459567)
+    end
+    _G.MinTimer = vv
+    notify("Kaos: running")
+    local function timerCheck()
+        local timer = game.Workspace.Message.Text:split(" ")
+        local time = tonumber(timer[1])
+        return time
+    end
+
+    if timerCheck() <= _G.MinTimer then
+        notify("Waiting for reward")
+        repeat
+            task.wait()
+        until timerCheck() > _G.MinTimer
+        notify("Server Hopping")
+        task.wait(1)
+        serverHop()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/ServerHop.lua", true))()
+    else
+        notify("Server Hopping")
+        serverHop()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/ServerHop.lua", true))()
+    end
+
+end
+end
+end
+
+
+
+
+local uilibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/ui/main/kaos"))()
+local windowz = uilibrary:CreateWindow("Kaos", "ABA", true)
+
+
+local PageFarm = windowz:CreatePage("📜 Farm")
+local PagePlayer = windowz:CreatePage("👤 Player")
+local PageSettings = windowz:CreatePage("🧷 Settings") 
+local PageCredits = windowz:CreatePage("✅ Credits")
+
+
+
+local SectionFarm = PageFarm:CreateSection("------ / Farm \\ ------")
+local SectionPlayer = PagePlayer:CreateSection("------ / Player \\ ------")
+local SectionSettings = PageSettings:CreateSection("------ / Settings \\ ------")
+local SectionServer = PageSettings:CreateSection("------ / Server \\ ------")
+local SectionCredits = PageCredits:CreateSection("------ / KAOS HUB \\ ------")
+
+
+
+
+SectionFarm:CreateTextbox("Timer to Hop", false, function (vv)
+    _G.MinTimer = vv
+ end)
+
+ SectionFarm:CreateTextbox("Set FPS", false, function (vv)
+    setfpscap(vv)
+ end)
+
+ SectionFarm:CreateToggle("AutoFarm", {Toggled=false , Description = "Hops Server in AFK World till the the Timer has reached Amount"}, function(bool)
+    getgenv().farmcoins = bool
+    print("Farming Coins: ", bool)
+    if bool then 
+        farmcoins()
+    end
+ end)
+
+ SectionSettings:CreateButton("Show FPS", function ()
+    loadstring(game:HttpGet("https://pastebin.com/raw/eVdCruXq"))()
+ end)
+
+
+
+SectionPlayer:CreateSlider("Walk Speed", {Min = 16, Max = 120, DefaultValue = 16}, function(v)
+    local walkSpeed = v
+
+    local p = game.Players.LocalPlayer
+    local c = getconnections(p.Character.Humanoid:GetPropertyChangedSignal("WalkSpeed"))
+    
+    for i,v in pairs(c) do
+        v:Disable()
+    end
+    
+    
+    game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = walkSpeed
+ end)
+
+ SectionPlayer:CreateSlider("Jump Power", {Min = 50, Max = 200, DefaultValue = 50}, function(v)
+    local jumpPower = v
+
+    local p = game.Players.LocalPlayer
+    local c = getconnections(p.Character.Humanoid:GetPropertyChangedSignal("JumpPower"))
+    
+    for i,v in pairs(c) do
+        v:Disable()
+    end
+    
+    
+    game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = jumpPower
+ end)
+
+ 
+SectionServer:CreateButton("Rejoin", function ()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+ end)
+
+ SectionSettings:CreateButton("FPS Boost", function ()
+    _G.Settings = {
+        Players = {
+            ["Ignore Me"] = true, -- Ignore your Character
+            ["Ignore Others"] = true -- Ignore other Characters
+        },
+        Meshes = {
+            Destroy = false, -- Destroy Meshes
+            LowDetail = false -- Low detail meshes (NOT SURE IT DOES ANYTHING)
+        },
+        Images = {
+            Invisible = true, -- Invisible Images
+            LowDetail = false, -- Low detail images (NOT SURE IT DOES ANYTHING)
+            Destroy = false, -- Destroy Images
+        },
+        Other = {
+            ["No Particles"] = true, -- Disables all ParticleEmitter, Trail, Smoke, Fire and Sparkles
+            ["No Camera Effects"] = true, -- Disables all PostEffect's (Camera/Lighting Effects)
+            ["No Explosions"] = true, -- Makes Explosion's invisible
+            ["No Clothes"] = true, -- Removes Clothing from the game
+            ["Low Water Graphics"] = true, -- Removes Water Quality
+            ["No Shadows"] = true, -- Remove Shadows
+            ["Low Rendering"] = true, -- Lower Rendering
+            ["Low Quality Parts"] = false -- Lower quality parts
+        }
+    }
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/boost/main/fps"))()
+ end)
+
+ SectionCredits:CreateButton("Developed by kyograve", function ()
+    print("kyograve on discord")
+ end)
+
+ SectionCredits:CreateButton("Copy Discord", function ()
+    setclipboard("https://discord.gg/aJJpUnwyMs")
+ end)
+
+
+
+ SectionSettings:CreateColorPicker("Color Picker", Color3.fromRGB(255, 0, 255), function ()
+    print("Color")
+ end)
+
+ SectionServer:CreateButton("Server Hop", function ()
+    local Player = game.Players.LocalPlayer    
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+    
+    local _place,_id = game.PlaceId, game.JobId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Desc&limit=100"
+    function ListServers(cursor)
+       local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+       return Http:JSONDecode(Raw)
+    end
+    
+    local Next; repeat
+       local Servers = ListServers(Next)
+       for i,v in next, Servers.data do
+           if v.playing < v.maxPlayers and v.id ~= _id then
+               local s,r = pcall(TPS.TeleportToPlaceInstance,TPS,_place,v.id,Player)
+               if s then break end
+           end
+       end
+       
+       Next = Servers.nextPageCursor
+    until not Next
+   
+ end)
+
+ SectionServer:CreateButton("Hop Low Server", function ()
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+    
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    function ListServers(cursor)
+       local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+       return Http:JSONDecode(Raw)
+    end
+    
+    local Server, Next; repeat
+       local Servers = ListServers(Next)
+       Server = Servers.data[1]
+       Next = Servers.nextPageCursor
+    until Server
+    
+    TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
+ end)
