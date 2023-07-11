@@ -25,8 +25,7 @@ end)
 
 
 getgenv().farmcoins = false
-getgenv().WalkSpeed = false 
-
+getgenv().WalkSpeed = false
 
 
 repeat
@@ -47,20 +46,22 @@ local function notify(text)
     })
 end
 
-local function serverHop()
-    if syn then
-        syn.queue_on_teleport(
-            'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
-    else
-        queue_on_teleport(
-            'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
-    end
-
-end
 
 
 function farmcoins()
     while getgenv().farmcoins == true do
+
+        local function serverHop()
+            if syn then
+                syn.queue_on_teleport(
+                    'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
+            else
+                queue_on_teleport(
+                    'loadstring(game:HttpGet("https://raw.githubusercontent.com/RZiln/GayBloxScripts/master/ABA/main.lua", true))()')
+            end
+        
+        end
+        
 if game.GameId == 578392296 then
     if game.PlaceId ~= 5411459567 then
         notify("Joining AFK WORLD")
@@ -94,8 +95,9 @@ end
 end
 end
 
+
 function WalkSpeed()
-while getgenv().WalkSpeed == true do
+while WalkSpeed == true do
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
 wait()
 end
@@ -119,7 +121,14 @@ local SectionServer = PageSettings:CreateSection("------ / Server \\ ------")
 local SectionCredits = PageCredits:CreateSection("------ / KAOS HUB \\ ------")
 
 
-
+SectionPlayer:CreateToggle("WalkSpeed", {Toggled=false , Description = "Bypassed WalkSpeed not Detectable"}, function(bool)
+    getgenv().WalkSpeed = bool
+    print("Is Attacking: ", bool)
+    if bool then 
+        WalkSpeed()
+    end
+ end)
+ 
 
 SectionFarm:CreateTextbox("Timer to Hop", false, function (vv)
     _G.MinTimer = vv
