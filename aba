@@ -106,7 +106,7 @@ local PageCredits = windowz:CreatePage("✅ Credits")
 
 
 
-local SectionFarm = PageFarm:CreateSection("------ / Farm \\ ------")
+local SectionFarm = PageFarm:CreateSection("------ / Coin Farm \\ ------")
 local SectionPlayer = PagePlayer:CreateSection("------ / Player \\ ------")
 local SectionSettings = PageSettings:CreateSection("------ / Settings \\ ------")
 local SectionServer = PageSettings:CreateSection("------ / Server \\ ------")
@@ -137,6 +137,59 @@ SectionFarm:CreateTextbox("Timer to Hop", false, function (vv)
  end)
 
 
+ SectionPlayer:CreateSlider("Bypassed WalkSpeed", {Min = 16, Max = 250, DefaultValue = 16}, function(v)
+    local spoofedValues = {
+        ['WalkSpeed'] = 16,
+        -- add any Humanoid property you want to spoof
+    }
+    
+    local players = game:GetService('Players')
+    local client = players.LocalPlayer
+    local humanoid = client.Character and client.Character:FindFirstChild('Humanoid')
+    
+    local old
+    old = hookmetamethod(game, '__index', function(...)
+        local i,p = ...
+        if (i == humanoid and spoofedValues[p]) then
+            return spoofedValues[p]
+        end
+        return old(...)
+    end)
+    
+    client.CharacterAdded:Connect(function(char)
+        humanoid = char:WaitForChild('Humanoid', 10)
+    end)
+    
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
+    
+ end)
+
+ SectionPlayer:CreateSlider("Bypassed JumpPower", {Min = 50, Max = 250, DefaultValue = 50}, function(v)
+    local spoofedValues = {
+        ['JumpPower'] = 50,
+        -- add any Humanoid property you want to spoof
+    }
+    
+    local players = game:GetService('Players')
+    local client = players.LocalPlayer
+    local humanoid = client.Character and client.Character:FindFirstChild('Humanoid')
+    
+    local old
+    old = hookmetamethod(game, '__index', function(...)
+        local i,p = ...
+        if (i == humanoid and spoofedValues[p]) then
+            return spoofedValues[p]
+        end
+        return old(...)
+    end)
+    
+    client.CharacterAdded:Connect(function(char)
+        humanoid = char:WaitForChild('Humanoid', 10)
+    end)
+    
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = v
+    
+ end)
 
 SectionPlayer:CreateSlider("Walk Speed", {Min = 16, Max = 120, DefaultValue = 16}, function(v)
     local walkSpeed = v
