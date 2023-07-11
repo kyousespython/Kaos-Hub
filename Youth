@@ -14,3 +14,7 @@ end
 if game.PlaceId==6777872443 then 
   loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/pp"))()
 end
+
+if game.PlaceId==1458767429 then 
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/Kaos-Hub/main/aba"))()
+end
