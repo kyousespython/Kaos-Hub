@@ -99,7 +99,7 @@ while getgenv().WalkSpeed == true do
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
 wait()
 end
-
+end
 
 local uilibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/ui/main/kaos"))()
 local windowz = uilibrary:CreateWindow("Kaos", "ABA", true)
