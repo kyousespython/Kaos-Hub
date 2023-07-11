@@ -97,7 +97,7 @@ end
 
 
 function WalkSpeed()
-while WalkSpeed == true do
+while getgenv().WalkSpeed == true do
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
 wait()
 end
