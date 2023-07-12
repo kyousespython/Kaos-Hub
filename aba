@@ -26,6 +26,8 @@ end)
 
 getgenv().farmcoins = false
 getgenv().WalkSpeed = false
+getgenv().WalkSpeed2 = false
+getgenv().WalkSpeedInstant = false
 
 
 repeat
@@ -96,10 +98,51 @@ end
 end
 
 
+
 function WalkSpeed()
 while getgenv().WalkSpeed == true do
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
 wait()
+end
+end
+
+function WalkSpeedInstant()
+    while getgenv().WalkSpeedInstant == true do
+local Players = game:service("Players")
+local Player = Players.LocalPlayer
+local userInput = game:service("UserInputService")
+local runService = game:service("RunService")
+repeat wait() until Player.Character
+local Character = Player.Character
+local pHum = Character:WaitForChild("Humanoid")
+local humRoot = Character:WaitForChild("HumanoidRootPart")
+local Multiplier = 0.01 --adjust this for more or less speed
+
+userInput.InputBegan:connect(function(Key)
+if Key.KeyCode == Enum.KeyCode.LeftBracket then
+Multiplier = Multiplier + 0.1
+wait(0.2)
+while userInput:IsKeyDown(Enum.KeyCode.LeftBracket) do
+wait()
+Multiplier = Multiplier + 0.1
+end
+end
+
+if Key.KeyCode == Enum.KeyCode.RightBracket then
+Multiplier = Multiplier - 0.1
+wait(0.2)
+while userInput:IsKeyDown(Enum.KeyCode.RightBracket) do
+wait()
+Multiplier = Multiplier - 0.1
+end
+end
+end)
+
+runService.Stepped:connect(function()
+if userInput:IsKeyDown(Enum.KeyCode.LeftShift) then
+humRoot.CFrame = humRoot.CFrame + pHum.MoveDirection * Multiplier
+end
+end)
 end
 end
 
@@ -121,12 +164,28 @@ local SectionServer = PageSettings:CreateSection("------ / Server \\ ------")
 local SectionCredits = PageCredits:CreateSection("------ / KAOS HUB \\ ------")
 
 
-SectionPlayer:CreateToggle("WalkSpeed", {Toggled=false , Description = "Bypassed WalkSpeed not Detectable"}, function(bool)
+
+
+
+
+ SectionPlayer:CreateToggle("WalkSpeed Multiplier", {Toggled=false , Description = "Bypassed Walkspeed, Multiplies your Speed"}, function(bool)
+    getgenv().WalkSpeedInstant = bool
+    print("WalkSpeed Enabled: ", bool)
+    if bool then 
+        WalkSpeedInstant()
+    end
+ end)
+
+SectionPlayer:CreateToggle("WalkSpeed CFrame", {Toggled=false , Description = "Bypassed WalkSpeed, CFrame speed."}, function(bool)
     getgenv().WalkSpeed = bool
     print("Is Attacking: ", bool)
     if bool then 
         WalkSpeed()
     end
+ end)
+
+ SectionSettings:CreateButton("Force Reset", function ()
+    game.Players.LocalPlayer.Character.Humanoid.Health = 0
  end)
  
 
@@ -152,24 +211,6 @@ SectionFarm:CreateTextbox("Timer to Hop", false, function (vv)
  end)
 
 
- 
-SectionPlayer:CreateSlider("Walk Speed", {Min = 16, Max = 120, DefaultValue = 16}, function(v)
- getgenv().WalkSpeed = v
- end)
-
- SectionPlayer:CreateSlider("Jump Power", {Min = 50, Max = 200, DefaultValue = 50}, function(v)
-    local jumpPower = v
-
-    local p = game.Players.LocalPlayer
-    local c = getconnections(p.Character.Humanoid:GetPropertyChangedSignal("JumpPower"))
-    
-    for i,v in pairs(c) do
-        v:Disable()
-    end
-    
-    
-    game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = jumpPower
- end)
 
  
 SectionServer:CreateButton("Rejoin", function ()
