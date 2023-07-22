@@ -1,0 +1,441 @@
+
+
+---// Loading Section \\---
+if not game:IsLoaded() then 
+    repeat game.Loaded:Wait()
+    until game:IsLoaded() 
+end
+
+
+
+local Namecall
+Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+   local Caller = tostring(getcallingscript())
+   local Method = getnamecallmethod()
+   
+   if Caller == 'ClientMover' and Method == 'GetService' then
+       return
+   end
+   
+   return Namecall(self, ...)
+end)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character
+
+local CollectionService = game:GetService("CollectionService")
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
+
+
+
+
+
+getgenv().prediction = 0.135 -- changeable
+getgenv().fov_settings = {
+    radius = 150, -- changeable
+    points = 100, -- changeable
+    drawings = {}, -- dont change
+    old_mouse = {} -- dont change
+}
+
+getgenv().silent = false
+
+
+function silent()
+while getgenv().silent == true do
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/LeadMarker/opensrc/main/Hood%20Games/lock.lua'))()
+    wait()
+    break;
+end
+end
+
+getgenv().Setting = {
+    Client = {WalkSpeed = 16, JumpPower = 50},
+}
+
+
+
+local A_1 = "🤓 Showtime 🤓"
+local A_2 = "All"
+local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+Event:FireServer(A_1, A_2)
+
+function trashtalk()
+while getgenv().trashtalk == true do
+    local A_1 = "son ez"
+local A_2 = "All"
+local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+Event:FireServer(A_1, A_2)
+wait(1)
+local A_1 = "skill issue 😝"
+local A_2 = "All"
+local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+Event:FireServer(A_1, A_2)
+wait(1)
+local A_1 = "wait but.. wait WHAT HAPPENED?!????"
+local A_2 = "All"
+local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+Event:FireServer(A_1, A_2)
+wait(1)
+local A_1 = "next time log asap 🤣"
+local A_2 = "All"
+local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+Event:FireServer(A_1, A_2)
+end
+return
+end
+
+
+
+
+
+
+local uilibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/ui/main/kaos"))()
+local windowz = uilibrary:CreateWindow("Kaos", "Testing", true)
+
+local PageMain = windowz:CreatePage("Main")
+local PageCombat = windowz:CreatePage("Combat")
+local PageServer = windowz:CreatePage("Server")
+local PageSettings = windowz:CreatePage("Settings")
+local PageExtra = windowz:CreatePage("Extra")
+local PageESP = windowz:CreatePage("ESP")
+local PageCredits = windowz:CreatePage("Credits")
+
+local Sectionplr = PageMain:CreateSection("Player")
+local Sectionaiming = PageCombat:CreateSection("Aiming")
+local SectionServer = PageServer:CreateSection("Server")
+local SectionSettings = PageSettings:CreateSection("Settings")
+local SectionCredits = PageCredits:CreateSection("Credits")
+local SectionExtra = PageExtra:CreateSection("Extra")
+local SectionESP = PageESP:CreateSection("ESP")
+local SectionESPSettings = PageESP:CreateSection("ESP Settings")
+
+
+Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, function(x)
+    Setting.Client.WalkSpeed = tonumber(x)
+ end)
+
+
+ Sectionplr:CreateSlider("JumpPower", {Min = 50, Max = 299, DefaultValue = 50}, function(x)
+    Setting.Client.JumpPower = tonumber(x)
+ end)
+
+
+ Sectionaiming:CreateSlider("Prediction", {Min = 0.135, Max = 1, DefaultValue = 0.135}, function(x)
+    getgenv().prediction = tonumber(x)
+ end)
+
+ Sectionaiming:CreateSlider("Radius", {Min = 150, Max = 400, DefaultValue = 150}, function(x)
+    fov_settings.radius = tonumber(x)
+ end)
+
+ Sectionaiming:CreateSlider("Points", {Min = 100, Max = 500, DefaultValue = 100}, function(x)
+    fov_settings.points = tonumber(x)
+ end)
+
+
+ Sectionaiming:CreateButton("Silent Aim", function ()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/LeadMarker/opensrc/main/Hood%20Games/lock.lua'))()
+ end)
+
+ SectionServer:CreateButton("Rejoin", function ()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+ end)
+
+
+ SectionSettings:CreateButton("FPS Boost", function ()
+    _G.Settings = {
+        Players = {
+            ["Ignore Me"] = true, -- Ignore your Character
+            ["Ignore Others"] = true -- Ignore other Characters
+        },
+        Meshes = {
+            Destroy = false, -- Destroy Meshes
+            LowDetail = false -- Low detail meshes (NOT SURE IT DOES ANYTHING)
+        },
+        Images = {
+            Invisible = true, -- Invisible Images
+            LowDetail = false, -- Low detail images (NOT SURE IT DOES ANYTHING)
+            Destroy = false, -- Destroy Images
+        },
+        Other = {
+            ["No Particles"] = true, -- Disables all ParticleEmitter, Trail, Smoke, Fire and Sparkles
+            ["No Camera Effects"] = true, -- Disables all PostEffect's (Camera/Lighting Effects)
+            ["No Explosions"] = true, -- Makes Explosion's invisible
+            ["No Clothes"] = true, -- Removes Clothing from the game
+            ["Low Water Graphics"] = true, -- Removes Water Quality
+            ["No Shadows"] = true, -- Remove Shadows
+            ["Low Rendering"] = true, -- Lower Rendering
+            ["Low Quality Parts"] = false -- Lower quality parts
+        }
+    }
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/boost/main/fps"))()
+ end)
+
+ SectionCredits:CreateButton("Developed by kyo", function ()
+    print("Credits!")
+ end)
+
+ SectionCredits:CreateButton("Copy Discord", function ()
+    setclipboard("https://discord.gg/aJJpUnwyMs")
+ end)
+
+
+
+ SectionSettings:CreateColorPicker("Color Picker", Color3.fromRGB(255, 0, 255), function ()
+    print("Color")
+ end)
+
+ SectionServer:CreateButton("Server Hop", function ()
+    local Player = game.Players.LocalPlayer    
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+    
+    local _place,_id = game.PlaceId, game.JobId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Desc&limit=100"
+    function ListServers(cursor)
+       local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+       return Http:JSONDecode(Raw)
+    end
+    
+    local Next; repeat
+       local Servers = ListServers(Next)
+       for i,v in next, Servers.data do
+           if v.playing < v.maxPlayers and v.id ~= _id then
+               local s,r = pcall(TPS.TeleportToPlaceInstance,TPS,_place,v.id,Player)
+               if s then break end
+           end
+       end
+       
+       Next = Servers.nextPageCursor
+    until not Next
+   
+ end)
+
+ SectionServer:CreateButton("Hop Low Server", function ()
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+    
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    function ListServers(cursor)
+       local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+       return Http:JSONDecode(Raw)
+    end
+    
+    local Server, Next; repeat
+       local Servers = ListServers(Next)
+       Server = Servers.data[1]
+       Next = Servers.nextPageCursor
+    until Server
+    
+    TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
+ end)
+
+
+ SectionSettings:CreateToggle("TrashTalk", {Toggled=false , Description = "trashtalk cuz why not right?"}, function(bool)
+    getgenv().trashtalk = bool
+    print("Is Trashtalking: ", bool)
+    if bool then 
+        trashtalk()
+    end
+ end)
+
+ 
+
+
+
+
+ SectionExtra:CreateButton("ChatSpy", function ()
+    loadstring(game:HttpGet("https://pastebin.com/raw/nzXicwc1", true))() -- Chatspy
+ end)
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ local vu = game:GetService("VirtualUser") -- AntiAfk
+ game:GetService("Players").LocalPlayer.Idled:connect(function()
+     vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+     wait(1)
+     vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+ end)
+
+
+RunService.RenderStepped:Connect(function()
+    if Character then
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+        if Humanoid then
+            Humanoid.WalkSpeed = Setting.Client.WalkSpeed
+            Humanoid.JumpPower = Setting.Client.JumpPower
+        end
+    end
+end)
+
+
+
+
+
+
+local get_rawmt = getrawmetatable(game)
+local old_index = get_rawmt.__index
+setreadonly(get_rawmt, false)
+get_rawmt.__index = newcclosure(function(self,value)
+    if tostring(value):lower() == "walkspeed" then
+        return 16
+    end
+    if tostring(value):lower() == "jumppower" then
+        return 50
+    end
+    return old_index(self,value)
+end)
+setreadonly(get_rawmt, true)
+
+-- connections
+connect(localplayer.Idled, function()
+    if getFlag("other_exploits_antiafk") then
+        virtualUser:ClickButton1(Vector2.zero, camera);
+    end
+end);
+
+connect(runService.Stepped, function()
+    if getFlag("other_exploits_noclip") then
+        local character = localplayer.Character;
+        if character then
+            for _, part in next, character:GetDescendants() do
+                if part:IsA("BasePart") and part.CanCollide then
+                    part.CanCollide = false;
+                end
+            end
+        end
+    end
+end);
+
+connect(runService.Heartbeat, function()
+    if getFlag("other_lighting_ambient") then
+        lighting.Ambient = getFlag("other_lighting_ambientcolor");
+    else
+        lighting.Ambient = ambient;
+    end
+    if getFlag("other_lighting_customtime") then
+        lighting.ClockTime = getFlag("other_lighting_timevalue");
+    end
+end);
+
+connect(runService.Heartbeat, function()
+    local character = localplayer.Character;
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid");
+    if humanoid then
+        if getFlag("movement_character_walkspeed") then
+            humanoid.WalkSpeed = getFlag("movement_character_walkspeed_value");
+        end
+        if getFlag("movement_character_jumpheight") then
+            humanoid.UseJumpPower = false;
+            humanoid.JumpHeight = getFlag("movement_character_jumpheight_value");
+        end
+        if getFlag("movement_character_hipheight") then
+            humanoid.HipHeight = getFlag("movement_character_hipheight_value");
+        end
+        if getFlag("movement_character_fly") then
+            local rootPart = humanoid.RootPart;
+            local velocity = Vector3.zero;
+            if inputService:IsKeyDown(Enum.KeyCode.W) then
+                velocity += camera.CFrame.LookVector;
+            end
+            if inputService:IsKeyDown(Enum.KeyCode.S) then
+                velocity += -camera.CFrame.LookVector;
+            end
+            if inputService:IsKeyDown(Enum.KeyCode.D) then
+                velocity += camera.CFrame.RightVector;
+            end
+            if inputService:IsKeyDown(Enum.KeyCode.A) then
+                velocity += -camera.CFrame.RightVector;
+            end
+            if inputService:IsKeyDown(Enum.KeyCode.Space) then
+                velocity += rootPart.CFrame.UpVector;
+            end
+            if inputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                velocity += -rootPart.CFrame.UpVector;
+            end
+            rootPart.Velocity = velocity * getFlag("movement_character_fly_value");
+        end
+    end
+end);
+
+connect(inputService.InputBegan, function(input, processed)
+    if input.UserInputType.Name == "MouseButton1" and not processed and getFlag("movement_teleporting_clicktp") then
+        local character = localplayer.Character;
+        local camPos = camera.CFrame.Position;
+
+        local ray = Ray.new(camPos, mouse.Hit.Position - camPos);
+        local _, hit, normal = workspace:FindPartOnRayWithIgnoreList(ray, { camera });
+        if hit and normal then
+            character:PivotTo(CFrame.new(hit + normal));
+        end
+    end
+    if input.KeyCode.Name == "Space" and not processed and getFlag("movement_character_infinitejump") then
+        local character = localplayer.Character;
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid");
+        if humanoid then
+            humanoid:ChangeState("Jumping");
+        end 
+    end
+end);
+
+connect(runService.RenderStepped, function()
+    fovCircle.Visible = getFlag("combat_fov_enabled") and getFlag("combat_fov_visible");
+    if fovCircle.Visible then
+        fovCircle.Position = inputService:GetMouseLocation();
+        fovCircle.Color = getFlag("combat_fov_color");
+        fovCircle.Radius = getFlag("combat_fov_size");
+        fovCircle.NumSides = 1000;
+        fovCircle.Thickness = 1;
+    end
+end);
+
+connect(runService.Heartbeat, function(deltaTime)
+    if getFlag("combat_aimbot_enabled") and keybinds["combat_aimbot_key"] then
+        local fov = getFlag("combat_fov_enabled") and getFlag("combat_fov_size");
+        local player, screenPosition, part = getClosest(fov, getFlag("combat_aimbot_teamcheck"));
+        if player and screenPosition and part then
+            if getFlag("combat_aimbot_visiblecheck") and not isVisible(part) then
+                return;
+            end
+
+            if curveStatus.player ~= player then
+                curveStatus = {player = player, i = 0};
+            end
+
+            local mousePosition = inputService:GetMouseLocation();
+            local delta = bezierCurve(getFlag("combat_aimbot_type"), curveStatus.i, mousePosition, screenPosition) - mousePosition;
+            mousemoverel(delta.X, delta.Y);
+
+            local stepSize = getFlag("combat_aimbot_stepsize");
+            local increment = (stepSize / 100) * (deltaTime * 100);
+            curveStatus.i = math.clamp(curveStatus.i + increment, 0, 1);
+        else
+            curveStatus = {player = nil, i = 0};
+        end
+    else
+        curveStatus = {player = nil, i = 0};
+    end
+end);
+
+
