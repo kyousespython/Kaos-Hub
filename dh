@@ -1,4 +1,25 @@
+-- Project Kaos // Da Hood // 
+-- Paid Script
 
+
+---//--- Plans:
+
+-- Aimbot
+-- Configs
+-- Improved Silent Aim
+-- Improved UI
+-- Misc Bug Fixes
+-- ESP
+-- Camlock
+
+-- Notification.new("error", "Error Heading", "Error body message.") -- Args(<string> Type, <string> Heading, <string> Body, <boolean?> AutoRemoveNotif, <number?> AutoRemoveTime, <function?> OnCloseFunction)
+-- Notification.new("success", "Success Heading", "Success body message.") -- Args(<string> Type, <string> Heading, <string> Body, <boolean?> AutoRemoveNotif, <number?> AutoRemoveTime, <function?> OnCloseFunction)
+-- Notification.new("info", "Information Heading", "Information body message.") -- Args(<string> Type, <string> Heading, <string> Body, <boolean?> AutoRemoveNotif, <number?> AutoRemoveTime, <function?> OnCloseFunction)
+-- Notification.new("warning", "Warning Heading", "Warning body message.") -- Args(<string> Type, <string> Heading, <string> Body, <boolean?> AutoRemoveNotif, <number?> AutoRemoveTime, <function?> OnCloseFunction)
+-- Notification.new("message", "Message Heading", "Message body message.") 
+
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/Jxereas/UI-Libraries/main/notification_gui_library.lua", true))()
+Notification.new("success", "Kaos Internal", "Whitelisted!, Loading UI..", 1)
 
 ---// Loading Section \\---
 if not game:IsLoaded() then 
@@ -6,8 +27,13 @@ if not game:IsLoaded() then
     until game:IsLoaded() 
 end
 
+getgenv().rejoin = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
+    if child.Name == 'ErrorPrompt' and child:FindFirstChild('MessageArea') and child.MessageArea:FindFirstChild("ErrorFrame") then
+        game:GetService("TeleportService"):Teleport(game.PlaceId)
+    end
+end)
 
-
+---// Bypass \\---
 local Namecall
 Namecall = hookmetamethod(game, '__namecall', function(self, ...)
    local Caller = tostring(getcallingscript())
@@ -20,6 +46,66 @@ Namecall = hookmetamethod(game, '__namecall', function(self, ...)
    return Namecall(self, ...)
 end)
 
+-- // Ensure is Da Hood (put in autoexec)
+if (game.PlaceId ~= 2788229376) then
+    return
+end
+
+-- // Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- // Vars
+local tablefind = table.find
+local MainEvent = ReplicatedStorage.MainEvent
+
+-- // Configuration
+local Flags = {
+    "CHECKER_1",
+    "TeleportDetect",
+    "OneMoreTime"
+}
+
+-- // __namecall hook
+local __namecall
+__namecall = hookmetamethod(game, "__namecall", function(...)
+    -- // Vars
+    local args = {...}
+    local self = args[1]
+    local method = getnamecallmethod()
+
+    -- // See if the game is trying to alert the server
+    if (method == "FireServer" and self == MainEvent and tablefind(Flags, args[2])) then
+        return
+    end
+
+    -- // Anti Crash
+    if (not checkcaller() and getfenv(2).crash) then
+        -- // Set the crash function (hooking can cause stutters)
+        local fenv = getfenv(2)
+        fenv.crash = function() end
+        setfenv(2, fenv)
+    end
+
+    -- //
+    return __namecall(...)
+end)
+
+-- // __newindex hook (stops game from setting ws/jp)
+local __newindex
+__newindex = hookmetamethod(game, "__newindex", function(t, k, v)
+    -- // Make sure it's trying to set our humanoid's ws/jp
+    if (not checkcaller() and t:IsA("Humanoid") and (k == "WalkSpeed" or k == "JumpPower")) then
+        -- // Disallow the set
+        return
+    end
+
+    -- //
+    return __newindex(t, k, v)
+end)
+
+
+
+---// Player Variables \\---
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character
@@ -28,10 +114,24 @@ local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 local VirtualUser = game:GetService("VirtualUser")
 
+local rawmetatable = getrawmetatable(game)
+local old = rawmetatable.__namecall
+setreadonly(rawmetatable, false)
+rawmetatable.__namecall =
+    newcclosure(
+    function(...)
+        local args = {...}
+        if Locking and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+            args[3] =
+                Plr.Character[getgenv().Partz].Position + (Plr.Character[getgenv().Partz].Velocity * Prediction / 10)
+            return old(unpack(args))
+        end
+        return old(...)
+    end
+)
 
 
-
-
+---// Settings \\---
 getgenv().prediction = 0.135 -- changeable
 getgenv().fov_settings = {
     radius = 150, -- changeable
@@ -40,9 +140,20 @@ getgenv().fov_settings = {
     old_mouse = {} -- dont change
 }
 
+
+getgenv().Setting = {
+    Client = {WalkSpeed = 16, JumpPower = 50},
+}
+
+
+
 getgenv().silent = false
+getgenv().cashfarm = false
 
 
+
+
+---// Functions \\---
 function silent()
 while getgenv().silent == true do
     loadstring(game:HttpGet('https://raw.githubusercontent.com/LeadMarker/opensrc/main/Hood%20Games/lock.lua'))()
@@ -51,16 +162,18 @@ while getgenv().silent == true do
 end
 end
 
-getgenv().Setting = {
-    Client = {WalkSpeed = 16, JumpPower = 50},
-}
-
-
-
-local A_1 = "🤓 Showtime 🤓"
-local A_2 = "All"
-local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
-Event:FireServer(A_1, A_2)
+function noclip()
+   
+while getgenv().noclip == true do
+ game:GetService("RunService").Stepped:wait() 
+    local character = game.Players.LocalPlayer.Character
+				for _, v in pairs(character:GetChildren()) do
+					if v:IsA("BasePart") then
+						v.CanCollide = false
+					end
+                    end
+                end
+            end
 
 function trashtalk()
 while getgenv().trashtalk == true do
@@ -87,33 +200,163 @@ end
 return
 end
 
+function cashfarm()
+while getgenv().cashfarm == true do
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lerkermer/lua-projects/master/SwagAutofarm"))()
+end
+end
 
 
+getgenv().antikill = false
+
+function antikill()
+while getgenv().antikill == true do
+game.Workspace.FallenPartsDestroyHeight = -10000
+local part = Instance.new("Part")
+part.Size = Vector3.new(100, 2, 100)
+part.Name = "AntiAutoKill"
+part.Parent = game.Workspace
+part.Anchored = true
+local pl = game.Players.LocalPlayer.Character
+part.Position = Vector3.new(-897.6600952148438, -650.0717163085938, -709.875732421875)
+pl.HumanoidRootPart.CFrame = part.CFrame
+wait()
+end
+end
 
 
+getgenv().autostomp = false
+getgenv().autoreload = false
 
+function autostomp()
+while getgenv().autostomp == true do
+    game.ReplicatedStorage.MainEvent:FireServer("Stomp")
+    wait()
+end
+end
+
+function autoreload()
+while getgenv().autoreload == true do
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool") then
+        if
+            game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild(
+                "Ammo"
+            )
+         then
+            if
+                game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild(
+                    "Ammo"
+                ).Value <= 0
+             then
+                game:GetService("ReplicatedStorage").MainEvent:FireServer(
+                    "Reload",
+                    game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool")
+                )
+                wait(1)
+            end
+        end
+    end
+end
+end
+
+local hitboxsize 
+getgenv().hitboxsize = nil --studs
+getgenv().hitbox = false
+
+function hitbox()
+    while getgenv().hitbox == true do
+       
+local Players = game:FindService("Players")
+local rs = game:FindService("RunService")
+local lp = Players.LocalPlayer
+local connections = {}
+
+local function hitbox(plr)
+    local plrname = plr.Name
+    local size = getgenv().hitboxsize
+    if not connections[plr] or not connections["SteppedLoop_"..plrname] then
+        connections[plr] = plr.CharacterAdded:Connect(function(char)
+            repeat task.wait() until char:FindFirstChildWhichIsA("Humanoid") and char:FindFirstChildWhichIsA("Humanoid").RootPart
+            hitbox(plr)
+        end)
+        connections["SteppedLoop_"..plrname] = rs.Stepped:Connect(function()
+            if plr.Character then
+                for i,v in next, plr.Character:GetDescendants() do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end
+    repeat task.wait() until plr.Character and plr.Character:FindFirstChildWhichIsA("Humanoid") and plr.Character:FindFirstChildWhichIsA("Humanoid").RootPart
+    plr.Character:FindFirstChildWhichIsA("Humanoid").RootPart.Size = Vector3.new(size,size,size)
+end
+
+for i,v in next, Players:GetPlayers() do
+    if v ~= lp then
+        hitbox(v)
+    end
+end
+
+Players.PlayerAdded:Connect(hitbox)
+
+Players.PlayerRemoving:Connect(function(plr)
+    local plrname = plr.Name
+    if connections[plr] then
+        connections[plr]:Disconnect()
+    end
+    if connections["SteppedLoop_"..plrname] then
+        connections["SteppedLoop_"..plrname]:Disconnect()
+    end
+end)
+end
+end
+
+---// Ui-Library \\---
 local uilibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/ui/main/kaos"))()
 local windowz = uilibrary:CreateWindow("Kaos", "Testing", true)
 
-local PageMain = windowz:CreatePage("Main")
-local PageCombat = windowz:CreatePage("Combat")
-local PageServer = windowz:CreatePage("Server")
-local PageSettings = windowz:CreatePage("Settings")
-local PageExtra = windowz:CreatePage("Extra")
-local PageESP = windowz:CreatePage("ESP")
-local PageCredits = windowz:CreatePage("Credits")
+local PageMain = windowz:CreatePage("✅ Main")
+local PageCombat = windowz:CreatePage("💣 Combat")
+local PageExtra = windowz:CreatePage("⚡ Misc")
+local PageESP = windowz:CreatePage("🌐 ESP")
+local PageSettings = windowz:CreatePage("⚙ Settings")
+local PageChangelog = windowz:CreatePage("⌛ Changelog")
+local PageCredits = windowz:CreatePage("🤓 Credits")
 
 local Sectionplr = PageMain:CreateSection("Player")
-local Sectionaiming = PageCombat:CreateSection("Aiming")
-local SectionServer = PageServer:CreateSection("Server")
+local SectionHitbox = PageMain:CreateSection("Hitbox")
+local SectionFarm = PageMain:CreateSection("Farms")
+local Sectionaiming = PageCombat:CreateSection("Silent")
+local SectionCamlock = PageCombat:CreateSection("Camlock")
 local SectionSettings = PageSettings:CreateSection("Settings")
+local SectionServer = PageSettings:CreateSection("Server")
 local SectionCredits = PageCredits:CreateSection("Credits")
 local SectionExtra = PageExtra:CreateSection("Extra")
+local SectionAnti = PageExtra:CreateSection("Anti Configs")
+local SectionOthers = PageExtra:CreateSection("Other Configs")
+local SectionTP = PageExtra:CreateSection("Teleports")
 local SectionESP = PageESP:CreateSection("ESP")
 local SectionESPSettings = PageESP:CreateSection("ESP Settings")
+local SectionChangelogs = PageChangelog:CreateSection("Updates")
+
+---// Features \\---
+
+SectionHitbox:CreateSlider("Hitbox Studs", {Min = 10, Max = 50, DefaultValue = 10}, function(vu)
+    getgenv().hitboxsize = vu
+ end)
+
+ SectionHitbox:CreateToggle("Hitbox Extender", {Toggled=false , Description = false}, function(Value)
+   getgenv().hitbox = bool
+   print("hitbox on: ", bool)
+   while bool do
+    hitbox()
+   end
+ end)
 
 
-Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, function(x)
+Sectionplr:CreateSlider("WalkSpeed", {Min = 17, Max = 499, DefaultValue = 16}, function(x)
     Setting.Client.WalkSpeed = tonumber(x)
  end)
 
@@ -137,10 +380,13 @@ Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, f
 
 
  Sectionaiming:CreateButton("Silent Aim", function ()
+    Notification.new("warning", "Kaos Warning", "This can not be Toggled off", 1)
     loadstring(game:HttpGet('https://raw.githubusercontent.com/LeadMarker/opensrc/main/Hood%20Games/lock.lua'))()
  end)
 
  SectionServer:CreateButton("Rejoin", function ()
+    Notification.new("info", "Kaos Information", "Rejoining!", 1)
+    wait(5)
     game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
  end)
 
@@ -174,11 +420,13 @@ Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, f
     loadstring(game:HttpGet("https://raw.githubusercontent.com/kyousespython/boost/main/fps"))()
  end)
 
- SectionCredits:CreateButton("Developed by kyo", function ()
-    print("Credits!")
+ SectionCredits:CreateButton("Developed by the one and only kyo", function ()
+    Notification.new("info", "Kaos Information", "kyo is a very stinky dev..", 1)
+    print("u found a secret console log _:d")
  end)
 
  SectionCredits:CreateButton("Copy Discord", function ()
+    Notification.new("info", "Kaos Information", "Copied Discord Invite", 1)
     setclipboard("https://discord.gg/aJJpUnwyMs")
  end)
 
@@ -189,6 +437,8 @@ Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, f
  end)
 
  SectionServer:CreateButton("Server Hop", function ()
+    Notification.new("info", "Kaos Information", "Server Hopping..", 1)
+    wait(5)
     local Player = game.Players.LocalPlayer    
     local Http = game:GetService("HttpService")
     local TPS = game:GetService("TeleportService")
@@ -216,6 +466,8 @@ Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, f
  end)
 
  SectionServer:CreateButton("Hop Low Server", function ()
+    Notification.new("info", "Kaos Information", "Server Hopping to Lowest Server..", 1)
+    wait(5)
     local Http = game:GetService("HttpService")
     local TPS = game:GetService("TeleportService")
     local Api = "https://games.roblox.com/v1/games/"
@@ -237,40 +489,353 @@ Sectionplr:CreateSlider("WalkSpeed", {Min = 16, Max = 499, DefaultValue = 16}, f
  end)
 
 
- SectionSettings:CreateToggle("TrashTalk", {Toggled=false , Description = "trashtalk cuz why not right?"}, function(bool)
+ SectionExtra:CreateToggle("TrashTalk", {Toggled=false , Description = "trashtalk on ur Enemies :D"}, function(bool)
     getgenv().trashtalk = bool
-    print("Is Trashtalking: ", bool)
     if bool then 
+        Notification.new("info", "Kaos Information", "TrashTalk Enabled", 1)
+        wait(1)
         trashtalk()
     end
  end)
-
- 
-
-
-
 
  SectionExtra:CreateButton("ChatSpy", function ()
     loadstring(game:HttpGet("https://pastebin.com/raw/nzXicwc1", true))() -- Chatspy
  end)
 
+ SectionExtra:CreateToggle("Noclip", {Toggled=false , Description = false}, function(bool)
+   getgenv().noclip = bool
+   if bool then
+    Notification.new("info", "Kaos Information", "NoClip Enabled", 1)
+    wait(1)
+    noclip()
+   end
+ end)
 
 
+-- features here 
+
+
+
+ SectionFarm:CreateButton("ATM Farm", function ()
+    Notification.new("warning", "Kaos Warning", "Starting in 5 second(s)", 1)
+    wait(5)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lerkermer/lua-projects/master/SwagAutofarm"))()
+ end)
+
+ getgenv().OldAimPart = "HumanoidRootPart"
+ getgenv().AimPart = nil
+ getgenv().AimlockKey = nil
+ getgenv().AimRadius = nil
+ getgenv().ThirdPerson = false 
+ getgenv().FirstPerson = false
+ getgenv().TeamCheck = false -- Check if Target is on your Team (True means it wont lock onto your teamates, false is vice versa) (Set it to false if there are no teams)
+ getgenv().PredictMovement = false -- Predicts if they are moving in fast velocity (like jumping) so the aimbot will go a bit faster to match their speed 
+ getgenv().PredictionVelocity = nil
+ getgenv().CheckIfJumped = false
+ getgenv().Smoothness = false
+ getgenv().SmoothnessAmount = nil
 
  
+ local Players, Uis, RService, SGui = game:GetService"Players", game:GetService"UserInputService", game:GetService"RunService", game:GetService"StarterGui";
+ local Client, Mouse, Camera, CF, RNew, Vec3, Vec2 = Players.LocalPlayer, Players.LocalPlayer:GetMouse(), workspace.CurrentCamera, CFrame.new, Ray.new, Vector3.new, Vector2.new;
+ local Aimlock, MousePressed, CanNotify = true, false, false;
+ local AimlockTarget;
+ local OldPre;
+ 
+
+ 
+ getgenv().WorldToViewportPoint = function(P)
+     return Camera:WorldToViewportPoint(P)
+ end
+ 
+ getgenv().WorldToScreenPoint = function(P)
+     return Camera.WorldToScreenPoint(Camera, P)
+ end
+ 
+ getgenv().GetObscuringObjects = function(T)
+     if T and T:FindFirstChild(getgenv().AimPart) and Client and Client.Character:FindFirstChild("Head") then 
+         local RayPos = workspace:FindPartOnRay(RNew(
+             T[getgenv().AimPart].Position, Client.Character.Head.Position)
+         )
+         if RayPos then return RayPos:IsDescendantOf(T) end
+     end
+ end
+ 
+ getgenv().GetNearestTarget = function()
+     -- Credits to whoever made this, i didnt make it, and my own mouse2plr function kinda sucks
+     local players = {}
+     local PLAYER_HOLD  = {}
+     local DISTANCES = {}
+     for i, v in pairs(Players:GetPlayers()) do
+         if v ~= Client then
+             table.insert(players, v)
+         end
+     end
+     for i, v in pairs(players) do
+         if v.Character ~= nil then
+             local AIM = v.Character:FindFirstChild("Head")
+             if getgenv().TeamCheck == true and v.Team ~= Client.Team then
+                 local DISTANCE = (v.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+                 local RAY = Ray.new(game.Workspace.CurrentCamera.CFrame.p, (Mouse.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * DISTANCE)
+                 local HIT,POS = game.Workspace:FindPartOnRay(RAY, game.Workspace)
+                 local DIFF = math.floor((POS - AIM.Position).magnitude)
+                 PLAYER_HOLD[v.Name .. i] = {}
+                 PLAYER_HOLD[v.Name .. i].dist= DISTANCE
+                 PLAYER_HOLD[v.Name .. i].plr = v
+                 PLAYER_HOLD[v.Name .. i].diff = DIFF
+                 table.insert(DISTANCES, DIFF)
+             elseif getgenv().TeamCheck == false and v.Team == Client.Team then 
+                 local DISTANCE = (v.Character:FindFirstChild("Head").Position - game.Workspace.CurrentCamera.CFrame.p).magnitude
+                 local RAY = Ray.new(game.Workspace.CurrentCamera.CFrame.p, (Mouse.Hit.p - game.Workspace.CurrentCamera.CFrame.p).unit * DISTANCE)
+                 local HIT,POS = game.Workspace:FindPartOnRay(RAY, game.Workspace)
+                 local DIFF = math.floor((POS - AIM.Position).magnitude)
+                 PLAYER_HOLD[v.Name .. i] = {}
+                 PLAYER_HOLD[v.Name .. i].dist= DISTANCE
+                 PLAYER_HOLD[v.Name .. i].plr = v
+                 PLAYER_HOLD[v.Name .. i].diff = DIFF
+                 table.insert(DISTANCES, DIFF)
+             end
+         end
+     end
+     
+     if unpack(DISTANCES) == nil then
+         return nil
+     end
+     
+     local L_DISTANCE = math.floor(math.min(unpack(DISTANCES)))
+     if L_DISTANCE > getgenv().AimRadius then
+         return nil
+     end
+     
+     for i, v in pairs(PLAYER_HOLD) do
+         if v.diff == L_DISTANCE then
+             return v.plr
+         end
+     end
+     return nil
+ end
+ 
+ Mouse.KeyDown:Connect(function(a)
+     if not (Uis:GetFocusedTextBox()) then 
+         if a == AimlockKey and AimlockTarget == nil then
+             pcall(function()
+                 if MousePressed ~= true then MousePressed = true end 
+                 local Target;Target = GetNearestTarget()
+                 if Target ~= nil then 
+                     AimlockTarget = Target
+                 end
+             end)
+         elseif a == AimlockKey and AimlockTarget ~= nil then
+             if AimlockTarget ~= nil then AimlockTarget = nil end
+             if MousePressed ~= false then 
+                 MousePressed = false 
+             end
+         end
+     end
+ end)
+ 
+ RService.RenderStepped:Connect(function()
+     if getgenv().ThirdPerson == true and getgenv().FirstPerson == true then 
+         if (Camera.Focus.p - Camera.CoordinateFrame.p).Magnitude > 1 or (Camera.Focus.p - Camera.CoordinateFrame.p).Magnitude <= 1 then 
+             CanNotify = true 
+         else 
+             CanNotify = false 
+         end
+     elseif getgenv().ThirdPerson == true and getgenv().FirstPerson == false then 
+         if (Camera.Focus.p - Camera.CoordinateFrame.p).Magnitude > 1 then 
+             CanNotify = true 
+         else 
+             CanNotify = false 
+         end
+     elseif getgenv().ThirdPerson == false and getgenv().FirstPerson == true then 
+         if (Camera.Focus.p - Camera.CoordinateFrame.p).Magnitude <= 1 then 
+             CanNotify = true 
+         else 
+             CanNotify = false 
+         end
+     end
+     if Aimlock == true and MousePressed == true then 
+         if AimlockTarget and AimlockTarget.Character and AimlockTarget.Character:FindFirstChild(getgenv().AimPart) then 
+             if getgenv().FirstPerson == true then
+                 if CanNotify == true then
+                     if getgenv().PredictMovement == true then
+                         if getgenv().Smoothness == true then
+                             --// The part we're going to lerp/smoothen \\--
+                             local Main = CF(Camera.CFrame.p, AimlockTarget.Character[getgenv().AimPart].Position + AimlockTarget.Character[getgenv().AimPart].Velocity/PredictionVelocity)
+                             
+                             --// Making it work \\--
+                             Camera.CFrame = Camera.CFrame:Lerp(Main, getgenv().SmoothnessAmount, Enum.EasingStyle.Elastic, Enum.EasingDirection.InOut)
+                         else
+                             Camera.CFrame = CF(Camera.CFrame.p, AimlockTarget.Character[getgenv().AimPart].Position + AimlockTarget.Character[getgenv().AimPart].Velocity/PredictionVelocity)
+                         end
+                     elseif getgenv().PredictMovement == false then 
+                         if getgenv().Smoothness == true then
+                             --// The part we're going to lerp/smoothen \\--
+                             local Main = CF(Camera.CFrame.p, AimlockTarget.Character[getgenv().AimPart].Position)
+
+                             --// Making it work \\--
+                             Camera.CFrame = Camera.CFrame:Lerp(Main, getgenv().SmoothnessAmount, Enum.EasingStyle.Elastic, Enum.EasingDirection.InOut)
+                         else
+                             Camera.CFrame = CF(Camera.CFrame.p, AimlockTarget.Character[getgenv().AimPart].Position)
+                         end
+                     end
+                 end
+             end
+         end
+     end
+      if CheckIfJumped == true then
+    if AimlockTarget.Character.HuDDDDDDDDDDWmanoid.FloorMaterial == Enum.Material.Air then
+ 
+        getgenv().AimPart = "HumanoidRootPart"
+    else
+      getgenv().AimPart = getgenv().OldAimPart
+
+    end
+ end
+end)
+
+ SectionCamlock:CreateDropdown("Part", {
+    List = {"UpperTorso", "LowerTorso", "HumanoidRootPart", "Head"},
+    Default = nil}, function(value)
+       getgenv().AimPart = value
+ end)
+
+ SectionCamlock:CreateTextbox("Keybind", false, function (vv)
+    getgenv().AimlockKey = vv
+ end)
+
+ 
+ SectionCamlock:CreateSlider("Radius", {Min = 10, Max = 200, DefaultValue = 30}, function(Value)
+    getgenv().AimRadius = Value
+ end)
+
+ SectionCamlock:CreateToggle("Third Person", {Toggled=false , Description = false}, function(bool)
+    getgenv().ThirdPerson = bool
+    while bool do
+        ThirdPerson()
+    end
+ end)
+
+ SectionCamlock:CreateToggle("First Person", {Toggled=false , Description = false}, function(bool)
+    getgenv().FirstPerson = bool
+    while bool do
+        FirstPerson()
+    end
+ end)
+
+ SectionCamlock:CreateToggle("Team Check", {Toggled=false , Description = false}, function(bool)
+    getgenv().TeamCheck = bool
+    while bool do
+        TeamCheck()
+    end
+ end)
+
+ SectionCamlock:CreateToggle("Predict Movement", {Toggled=false , Description = false}, function(bool)
+    getgenv().PredictMovement = bool
+    while bool do
+        PredictMovement()
+    end
+ end)
+
+ SectionCamlock:CreateSlider("Prediction", {Min = 0.135, Max = 10, DefaultValue = 6.612}, function(Value)
+    getgenv().PredictionVelocity = Value
+ end)
+
+ SectionCamlock:CreateToggle("Check if Jumping", {Toggled=false , Description = false}, function(bool)
+    getgenv().CheckIfJumped = bool
+    while bool do
+        CheckIfJumped()
+    end
+ end)
+
+ SectionCamlock:CreateToggle("Smoothness", {Toggled=false , Description = false}, function(bool)
+    getgenv().Smoothness = bool
+    while bool do
+        Smoothness()
+    end
+ end)
+
+ SectionCamlock:CreateSlider("Smoothness Amount", {Min = 0.2, Max = 1, DefaultValue = 0.2}, function(Value)
+    getgenv().SmoothnessAmount = Value
+ end)
+
+
+
+ SectionTP:CreateTextbox("Username", false, function (vv)
+    targetUsername = vv
+
+    players = game:GetService("Players")
+    targetPlayer = players:FindFirstChild(targetUsername)
+    players.LocalPlayer.Character:MoveTo(targetPlayer.Character.HumanoidRootPart.Position)
+ end)
 
 
 
 
+ SectionAnti:CreateButton("Anti Kill", function ()
+    game.Workspace.FallenPartsDestroyHeight = -10000
+    local part = Instance.new("Part")
+    part.Size = Vector3.new(100, 2, 100)
+    part.Name = "AntiAutoKill"
+    part.Parent = game.Workspace
+    part.Anchored = true
+    local pl = game.Players.LocalPlayer.Character
+    part.Position = Vector3.new(-897.6600952148438, -650.0717163085938, -709.875732421875)
+    pl.HumanoidRootPart.CFrame = part.CFrame
+ end)
 
 
 
 
+ SectionOthers:CreateToggle("Auto Reload", {Toggled=false , Description = "Reloads automatically after ur mag is gone"}, function(bool)
+    getgenv().autoreload = bool
+    while bool do
+        autoreload()
+        wait()
+    end
+ end)
+
+ SectionOthers:CreateToggle("Auto Stomp", {Toggled=false , Description = "Stomps when someone is down"}, function(bool)
+    getgenv().autostomp = bool
+    while bool do
+        autostomp()
+        wait()
+    end
+ end)
 
 
 
 
+ SectionChangelogs:CreateButton("[+] Fixed Antikill crashing", function ()
+    print("u found a secret console log _:d")
+ end)
 
+ SectionChangelogs:CreateButton("[+] Added Auto Reload", function ()
+    print("u found a secret console log _:d")
+ end)
+
+ SectionChangelogs:CreateButton("[+] Added Auto Stomp", function ()
+    print("u found a secret console log _:d")
+ end)
+
+ SectionChangelogs:CreateButton("[+] Improved Silent & Camlock", function ()
+    print("u found a secret console log _:d")
+ end)
+
+ SectionChangelogs:CreateButton("[-] Minor bug fixes", function ()
+    print("u found a secret console log _:d")
+ end)
+
+ SectionChangelogs:CreateButton("[-] UI improvements", function ()
+    print("u found a secret console log _:d")
+ end)
+
+
+---// ESP \\---
+
+
+
+---// More Variables \\---
  local vu = game:GetService("VirtualUser") -- AntiAfk
  game:GetService("Players").LocalPlayer.Idled:connect(function()
      vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
@@ -308,7 +873,8 @@ get_rawmt.__index = newcclosure(function(self,value)
 end)
 setreadonly(get_rawmt, true)
 
--- connections
+
+---// Connections \\---
 connect(localplayer.Idled, function()
     if getFlag("other_exploits_antiafk") then
         virtualUser:ClickButton1(Vector2.zero, camera);
